@@ -43,26 +43,26 @@ main>.card{background-image:linear-gradient(90deg,var(--pc),var(--pc2));backgrou
 .list>:nth-child(2){animation-delay:.05s}.list>:nth-child(3){animation-delay:.1s}.list>:nth-child(4){animation-delay:.15s}.list>:nth-child(5){animation-delay:.2s}
 @keyframes in{from{transform:translateY(16px) scale(.95);opacity:0}}
 .it .rt{flex:1;min-width:0;text-align:left;background:none;box-shadow:none;color:#fff;padding:6px 0;border-radius:0;font:700 24px/1.15 var(--fd);letter-spacing:-.3px;overflow-wrap:anywhere;text-shadow:0 1px 2px rgba(0,0,0,.12)}
-.it .rt:active{transform:none;filter:none;opacity:.75}
+.it .rt:is(:active,.prs){transform:none;filter:none;opacity:.75}
 .it .tag{color:#fff;background:#ffffff33}
 /* Hold to mark done: the bar (.hb) fills the tile over one second while held, drains back if let go early,
    then the tile pops away. */
 .it .ck{flex:none;width:36px;height:36px;padding:0;border-radius:50%;border:3px solid #fffd;background:#ffffff26;box-shadow:none;display:grid;place-content:center;transition:background .2s,border-color .2s}
 .it .ck::after{content:"";width:8px;height:15px;margin-top:-4px;border:solid var(--c2);border-width:0 3px 3px 0;transform:rotate(45deg) scale(0);transition:transform .25s var(--bounce)}
-.it .ck:active{transform:none;filter:none}
+.it .ck:is(:active,.prs){transform:none;filter:none}
 .it>.hb{position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(90deg,#ffffff38,#ffffff80);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 .it.holding{transform:scale(.97);transition:transform 1s ease-out}
 .it.holding .hb{transform:scaleX(1);transition:transform 1s linear}
-.it.holding .rt:active{opacity:1}
+.it.holding .rt:is(:active,.prs){opacity:1}
 .it.popped{animation:popout .42s cubic-bezier(.3,1.4,.6,1) forwards}
 .it.popped .hb{transform:scaleX(1);background:#ffffff66;transition:none}
 .it.popped .ck{background:#fff;border-color:#fff}.it.popped .ck::after{transform:rotate(45deg) scale(1)}
 @keyframes popout{0%{transform:scale(.97)}35%{transform:scale(1.06);filter:brightness(1.15)}100%{transform:scale(.6);opacity:0}}
 .slot{min-height:88px;width:100%;border-radius:26px;border:2.5px dashed color-mix(in srgb,var(--mu) 32%,transparent);background:none;box-shadow:none;color:var(--mu);font:600 17px var(--fd);animation:in .45s var(--bounce) both}
-.slot:active{transform:scale(.97)}
+.slot:is(:active,.prs){transform:scale(.97)}
 .note{text-align:center;margin:2px 0 0}
 .fab{position:fixed;z-index:6;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:78px;height:78px;padding:0;border-radius:50%;display:grid;place-items:center;border:5px solid var(--bg);background:linear-gradient(135deg,#ff3d71,#ff8a3d);box-shadow:0 12px 26px -6px #ff3d7190}
-.fab:active{transform:translateX(-50%) scale(.9)}
+.fab:is(:active,.prs){transform:translateX(-50%) scale(.9)}
 .fab.full{background:color-mix(in srgb,var(--mu) 45%,var(--bg));box-shadow:none}
 
 /* ===== Inputs & buttons ===== */
@@ -75,7 +75,7 @@ input[type=checkbox].pop{animation:pop .3s cubic-bezier(.34,1.56,.64,1)}@keyfram
 button{background:linear-gradient(135deg,var(--pc),var(--pc2));color:#fff;border:0;border-radius:14px;padding:11px 16px;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 6px 14px -6px color-mix(in srgb,var(--pc) 70%,transparent);transition:transform .25s var(--bounce),filter .1s,background var(--fast)}
 button:disabled{opacity:.5;cursor:default}
 button.g,button.x,.seg button,.gear,#toast button{box-shadow:none}
-button:active{transform:scale(.93);filter:brightness(.95);transition-duration:.08s}
+button:is(:active,.prs){transform:scale(.93);filter:brightness(.95);transition-duration:.08s}
 button.g{background:none;color:var(--mu);padding:8px 10px;font-weight:600}button.x{background:none;color:var(--neg);padding:8px 8px;font-weight:600}
 button.bd{border:1px solid var(--bd);color:var(--tx)}
 .seg{display:flex;gap:6px;margin:10px 0}.seg button{flex:1;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:999px;padding:9px 6px}
@@ -104,6 +104,7 @@ button.bd{border:1px solid var(--bd);color:var(--tx)}
 </style></head>
 <body><header class="top"><span class="tt"><svg class="logo" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#7b2ff0"/><circle cx="16" cy="16" r="12.2" fill="#efe4ff"/><circle cx="16" cy="16" r="10.6" fill="#a66bff"/><path d="M16 6v20M6 16h20M8.6 8.6l14.8 14.8M23.4 8.6 8.6 23.4" stroke="#efe4ff" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="16" r="2.2" fill="#efe4ff"/></svg><span><span class="jz">Big Tidy</span> Reminders</span></span><button id="gear" class="gear" aria-label="Settings" data-a="gear"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></header>
 <main id="app"></main><button id="fab" class="fab" data-a="add" aria-label="Add a reminder"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><div id="toast" role="status" aria-live="polite"></div><div id="dlg" hidden></div>
+<script src="feedback.js"></script>
 <script src="sync.js"></script>
 <script>
 // =====================================================================
@@ -149,7 +150,7 @@ const full=()=>S.items.length>=MAX;
 // Capitalize the first letter of every word (the rest is left as typed), e.g. "call mom (re: taxes)" -> "Call Mom (Re: Taxes)"
 const caps=s=>s.replace(/(^|\s)([^\s\p{L}]*)(\p{L})/gu,(m,a,b,c)=>a+b+c.toUpperCase());
 
-function toast(msg,undo){const el=document.getElementById('toast');
+function toast(msg,undo){window.Feedback&&Feedback.fromToast(msg);const el=document.getElementById('toast');
  el.innerHTML=`<span>${esc(msg)}</span>${undo?'<button data-a="undo">Undo</button>':''}`;UNDO=undo||null;el.classList.add('on');
  clearTimeout(TT);TT=setTimeout(()=>{el.classList.remove('on');UNDO=null},5000)}
 
@@ -170,7 +171,7 @@ function vHome(){
  return `<div class="list">${tiles}${slots}</div>${note}${nag}`}
 
 function vMore(){
- return `<div class="card"><h2>Settings</h2><div class="sec">Appearance</div><div class="seg">${[['system','Auto'],['daynight','Day/Night'],['light','Light'],['dark','Dark']].map(([v,l])=>`<button class="${S.set.theme==v?'on':''}" data-a="theme" data-v="${v}">${l}</button>`).join('')}</div></div>
+ return `<div class="card"><h2>Settings</h2><div class="sec">Appearance</div><div class="seg">${[['system','Auto'],['daynight','Day/Night'],['light','Light'],['dark','Dark']].map(([v,l])=>`<button class="${S.set.theme==v?'on':''}" data-a="theme" data-v="${v}">${l}</button>`).join('')}</div>${window.Feedback?Feedback.view(''):''}</div>
  ${window.CloudSync?CloudSync.view():''}
  <div class="card"><h2>Backup & restore</h2><p class="mu">Everything is saved in this browser only. Download a backup now and then to keep it safe, or to move it to another device.</p>
  <p class="mu" style="font-weight:700">${S.set.lastBk?'Last backup: '+new Date(S.set.lastBk).toLocaleDateString([],{month:'long',day:'numeric',year:'numeric'}):'No backup yet.'}</p>
@@ -256,13 +257,10 @@ function holdEnd(){if(!H)return;clearTimeout(H.tm);
  if(!H.fired)H.tile.classList.remove('holding');
  if(H.fired||Date.now()-H.t0>250)NOCLICK=Date.now();   // a long press shouldn't also count as a tap that opens the editor
  H=null}
-function holdDone(){if(!H)return;const{tile,id}=H;H.fired=true;buzz();
+function holdDone(){if(!H)return;const{tile,id}=H;H.fired=true;window.Feedback&&Feedback.hap('success');
  tile.classList.remove('holding');tile.classList.add('popped');
  S.set.held=1;   // hides the "hold to mark done" hint from now on (saved by done)
  setTimeout(()=>done(id),420)}
-// Haptic tap: vibrate where supported (Android); otherwise toggle a hidden iOS switch, which makes recent iPhones tick
-function buzz(){try{if(navigator.vibrate&&navigator.vibrate(30))return}catch(e){}
- try{const l=document.createElement('label'),i=document.createElement('input');i.type='checkbox';i.setAttribute('switch','');l.appendChild(i);l.style.display='none';document.body.appendChild(l);l.click();l.remove()}catch(e){}}
 document.addEventListener('pointerdown',e=>{const t=e.target.closest('.it');if(t&&e.button<=0)holdStart(t,e)});
 document.addEventListener('pointermove',e=>{if(H&&!H.fired&&e.pointerId==H.pid&&Math.hypot(e.clientX-H.x,e.clientY-H.y)>MOVE_PX)holdEnd()});
 document.addEventListener('pointerup',holdEnd);document.addEventListener('pointercancel',holdEnd);addEventListener('blur',holdEnd);

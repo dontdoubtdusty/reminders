@@ -13,6 +13,7 @@ Five things to remember, and no more. It's part of the Big apps, alongside [Big 
 - Undo for anything you mark done or delete, for a few seconds afterward
 - No notifications: you open the app to see your list
 - Light, dark and automatic themes, plus a Day/Night option that switches to dark at 6pm and back to light at 6am
+- Light haptic ticks when you save, delete, finish or toggle something, and buttons that visibly press in on every tap. Turn haptics off under **Settings > Haptics**.
 - Backups you can share, download and import, with a weekly reminder
 - Optional sync across devices with an email sign-in
 
@@ -34,6 +35,7 @@ Once it's installed, it opens full screen with its own icon and works without an
 | --- | --- |
 | `index.html` | The whole app |
 | `sync.js` | Optional sync across devices (shared by all the Big apps) |
+| `feedback.js` | Haptic ticks and button press feedback (shared by all the Big apps) |
 | `manifest.webmanifest` | The app's name, colors and icons, used when it's installed |
 | `sw.js` | Saves a copy of the app so it opens offline |
 | `icon-192.png`, `icon-512.png`, `apple-touch-icon.png` | The app icon at each size browsers and phones ask for |
