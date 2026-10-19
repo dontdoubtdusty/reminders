@@ -12,7 +12,7 @@ Five things to remember, and no more. It's part of the Big apps, alongside [Big 
 - Tap a reminder to rename it, change how it repeats (including turning a one-off into a recurring one), or delete it.
 - Undo for anything you tick off or delete, for a few seconds afterward
 - No notifications: you open the app to see your list
-- Light, dark and automatic themes
+- Light, dark and automatic themes, plus a Day/Night option that switches to dark at 6pm and back to light at 6am
 - Backups you can share, download and import, with a weekly reminder
 - Optional sync across devices with an email sign-in
 

@@ -157,7 +157,7 @@ function vHome(){
  return `<div class="list">${tiles}${slots}</div>${note}${nag}`}
 
 function vMore(){
- return `<div class="card"><h2>Settings</h2><div class="sec">Appearance</div><div class="seg">${[['system','Auto'],['light','Light'],['dark','Dark']].map(([v,l])=>`<button class="${S.set.theme==v?'on':''}" data-a="theme" data-v="${v}">${l}</button>`).join('')}</div></div>
+ return `<div class="card"><h2>Settings</h2><div class="sec">Appearance</div><div class="seg">${[['system','Auto'],['daynight','Day/Night'],['light','Light'],['dark','Dark']].map(([v,l])=>`<button class="${S.set.theme==v?'on':''}" data-a="theme" data-v="${v}">${l}</button>`).join('')}</div></div>
  ${window.CloudSync?CloudSync.view():''}
  <div class="card"><h2>Backup & restore</h2><p class="mu">Everything is saved in this browser only. Download a backup now and then to keep it safe, or to move it to another device.</p>
  <p class="mu" style="font-weight:700">${S.set.lastBk?'Last backup: '+new Date(S.set.lastBk).toLocaleDateString([],{month:'long',day:'numeric',year:'numeric'}):'No backup yet.'}</p>
@@ -173,13 +173,18 @@ function vEdit(){const r=ED.id&&S.items.find(x=>x.id==ED.id);if(ED.id&&!r){ED=nu
  <div class="row"><button data-a="esave">${r?'Save':'Add'}</button><button class="g bd" data-a="eclose">Cancel</button></div>
  ${r?'<button class="x del" data-a="edel">Delete reminder</button>':''}</div>`}
 
-function R(){const de=document.documentElement,th=S.set.theme||'system';de.dataset.theme=th=='system'?(DARK.matches?'dark':'light'):th;
+function R(){const de=document.documentElement,th=S.set.theme||'system';de.dataset.theme=themeOf(th);dnTimer();
  DAY=tdy();
  document.getElementById('app').innerHTML=VIEW=='more'?vMore():vHome();
  document.getElementById('gear').classList.toggle('on',VIEW=='more');
  const fab=document.getElementById('fab');fab.hidden=VIEW!='home';fab.classList.toggle('full',full());
  const d=document.getElementById('dlg');if(ED){d.innerHTML=vEdit();d.hidden=!ED}else{d.hidden=true;d.innerHTML=''}}
 const DARK=matchMedia('(prefers-color-scheme: dark)');DARK.addEventListener?.('change',()=>S.set.theme=='system'&&R());
+// Day/Night theme: dark from 6pm to 6am, light the rest of the day. A timer flips it on the hour while the app is open.
+const isNight=()=>{const h=new Date().getHours();return h>=18||h<6};
+const themeOf=th=>th=='system'?(DARK.matches?'dark':'light'):th=='daynight'?(isNight()?'dark':'light'):th;
+let DNT=0;function dnTimer(){clearTimeout(DNT);if(S.set.theme!='daynight')return;const n=new Date(),t=new Date(n),h=n.getHours();t.setHours(h<6?6:h<18?18:30,0,1,0);DNT=setTimeout(R,t-n)}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S&&S.set.theme=='daynight'&&document.documentElement.dataset.theme!=themeOf('daynight'))R()});   // timers pause while the phone sleeps
 
 // =====================================================================
 // 4. ACTIONS
