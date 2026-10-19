@@ -1,13 +1,14 @@
-# Big Nudgy Reminders
+# Big Tidy Reminders
 
 Five things to remember, and no more. It's part of the Big apps, alongside [Big Minty Finances](https://github.com/dontdoubtdusty/budget), [Big Skinny Health](https://github.com/dontdoubtdusty/diet) and [Big Saucy Recipes](https://github.com/dontdoubtdusty/cooking). It's one file (`index.html`) with no build step and no server.
 
 ## Features
 
-- Five slots. When they're all used, you finish or delete one before adding another.
+- Opens straight to a big, bold list of up to five things, with a big plus button to add another
+- Five slots. When they're all used, you finish or delete one before adding another. Empty slots show as dashed outlines.
 - Each reminder is just a title, listed in the order you added it.
 - Tick a one-off reminder and it's gone.
-- Recurring reminders repeat weekly or monthly. Tick one and it hides, then comes back 7 days or 1 month after the day you ticked it. While it's away it still holds its slot, and the counter at the top shows how many are coming back later.
+- Recurring reminders repeat weekly or monthly. Tick one and it hides, then comes back 7 days or 1 month after the day you ticked it. While it's away it still holds its slot, and a line under the list says how many are coming back later.
 - Tap a reminder to rename it, change how it repeats (including turning a one-off into a recurring one), or delete it.
 - Undo for anything you tick off or delete, for a few seconds afterward
 - No notifications: you open the app to see your list
