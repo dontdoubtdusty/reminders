@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Big Nudgy</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#fff6ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#170f1c" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Big Nudgy"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== Theme (same palette as the other Big apps) ===== */
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);color-scheme:light;--bg:#fff6ee;--card:#fff;--fld:#fff0e5;--tx:#2b1a2e;--mu:#8a7088;--ac:#17a65a;--bd:#f4e1d4;--neg:#e8295b;--wn:#f08c00;--pc:#ff6a2b;--pc2:#ff3d71;--brand:#8b3ff0;--gl:10%;--tst:#2b1a2e;--sh:0 1px 2px rgba(90,30,60,.05),0 10px 24px -14px rgba(90,30,60,.22);--fast:.16s;--fd:'Fredoka','Nunito',system-ui,sans-serif;--bounce:cubic-bezier(.34,1.56,.64,1)}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#170f1c;--card:#231829;--fld:#2e2136;--tx:#fbeef6;--mu:#b59bb6;--ac:#3ddc84;--bd:#3a2a44;--neg:#ff5c85;--wn:#ffb020;--brand:#b07cff;--sh:0 10px 24px -16px rgba(0,0,0,.7);--gl:20%;--tst:#3b2a44}
+:root[data-theme="dark"] .card{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),var(--sh)}
+
+/* ===== Base ===== */
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px);touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+body{margin:0;background:radial-gradient(900px 440px at 50% -140px,color-mix(in srgb,var(--pc) var(--gl),transparent),transparent 72%) no-repeat,var(--bg);color:var(--tx);font:500 15px/1.45 'Nunito',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding-bottom:calc(40px + env(safe-area-inset-bottom,0px));overflow-x:clip;-webkit-font-smoothing:antialiased;min-height:100vh}
+button,input{font-family:inherit}
+main{max-width:560px;margin:0 auto;padding:12px;display:grid;gap:12px}
+h2,h3{margin:0 0 10px;font-family:var(--fd);font-weight:600}h2{font-size:20px;letter-spacing:-.2px}h3{font-size:16px}
+.mu{color:var(--mu);font-size:13px}
+.sec{display:block;font-size:12px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--mu);margin:2px 0 6px}
+
+/* ===== Cards ===== */
+.card{border-radius:22px;box-shadow:var(--sh);background:var(--card);border:1px solid var(--bd);padding:16px}
+main>.card{background-image:linear-gradient(90deg,var(--pc),var(--pc2));background-size:100% 5px;background-repeat:no-repeat;background-origin:border-box;padding-top:19px}.card h2{color:var(--pc)}
+.row{display:flex;gap:8px;align-items:center;margin:2px 0;min-height:38px}.row>*{min-width:0}.row>button{flex:1}
+.warn{border-color:var(--wn)}.warn h3{color:var(--wn)}
+.tag{flex:none;font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--brand);background:color-mix(in srgb,var(--brand) 14%,transparent);border-radius:99px;padding:3px 8px}
+
+/* ===== Slot counter ===== */
+.slots{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:-2px 0 10px}
+.pips{display:flex;gap:6px}.pips i{width:12px;height:12px;border-radius:50%;border:2px solid color-mix(in srgb,var(--mu) 40%,transparent);transition:background .25s,border-color .25s}
+.pips i.on{background:linear-gradient(135deg,var(--pc),var(--pc2));border-color:transparent}
+
+/* ===== Reminder rows ===== */
+.rm{display:flex;align-items:center;gap:10px;min-height:48px;border-top:1px solid var(--bd);transition:opacity .3s}.rm:first-child{border-top:0}
+.rm .rt{flex:1;min-width:0;text-align:left;background:none;color:var(--tx);box-shadow:none;padding:12px 0;font-weight:700;font-size:16px;border-radius:0;overflow-wrap:anywhere}
+.rm .rt:active{transform:none;filter:none;opacity:.6}
+.rm.going{opacity:.45}.rm.going .rt{text-decoration:line-through}
+.empty{text-align:center;padding:18px 0 12px}.empty b{display:block;font:600 18px var(--fd);margin-bottom:2px}
+
+/* ===== Inputs & buttons ===== */
+input[type=text],input[type=email],input[type=password]{width:100%;padding:11px 12px;border:1px solid transparent;border-radius:12px;background:var(--fld);color:var(--tx);font:inherit;font-size:16px;transition:border-color var(--fast),background var(--fast)}
+input:focus{outline:none;border-color:color-mix(in srgb,var(--pc) 60%,transparent);background:var(--card);box-shadow:0 0 0 3px color-mix(in srgb,var(--pc) 18%,transparent)}
+input[type=checkbox]{-webkit-appearance:none;appearance:none;width:26px;height:26px;flex:none;margin:0;border:2px solid color-mix(in srgb,var(--mu) 45%,transparent);border-radius:8px;background:var(--card);display:inline-grid;place-content:center;cursor:pointer;transition:background var(--fast),border-color var(--fast)}
+input[type=checkbox]::after{content:"";width:6px;height:11px;margin-top:-3px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) scale(0);transition:transform .22s cubic-bezier(.34,1.56,.64,1)}
+input[type=checkbox]:checked{background:linear-gradient(135deg,var(--pc),var(--pc2));border-color:transparent}input[type=checkbox]:checked::after{transform:rotate(45deg) scale(1)}
+input[type=checkbox].pop{animation:pop .3s cubic-bezier(.34,1.56,.64,1)}@keyframes pop{40%{transform:scale(1.22)}}
+button{background:linear-gradient(135deg,var(--pc),var(--pc2));color:#fff;border:0;border-radius:14px;padding:11px 16px;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 6px 14px -6px color-mix(in srgb,var(--pc) 70%,transparent);transition:transform .25s var(--bounce),filter .1s,background var(--fast)}
+button:disabled{opacity:.5;cursor:default}
+button.g,button.x,.seg button,.gear,#toast button{box-shadow:none}
+button:active{transform:scale(.93);filter:brightness(.95);transition-duration:.08s}
+button.g{background:none;color:var(--mu);padding:8px 10px;font-weight:600}button.x{background:none;color:var(--neg);padding:8px 8px;font-weight:600}
+button.bd{border:1px solid var(--bd);color:var(--tx)}
+.seg{display:flex;gap:6px;margin:10px 0}.seg button{flex:1;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:999px;padding:9px 6px}
+.seg button.on{background:linear-gradient(135deg,var(--pc),var(--pc2));border-color:transparent;color:#fff;box-shadow:0 6px 14px -6px color-mix(in srgb,var(--pc) 70%,transparent)}
+.addb{width:100%}
+
+/* ===== Header ===== */
+.top{display:flex;align-items:center;justify-content:center;position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--card) 88%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px);color:var(--tx);border-bottom:1px solid var(--bd);padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px;margin-top:calc(-1 * env(safe-area-inset-top,0px));font:600 20px/1.2 var(--fd);letter-spacing:-.2px;text-align:center}
+.top .tt{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:0 44px;white-space:nowrap}.top .logo{flex:none;animation:spin 18s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.jz{background:linear-gradient(90deg,#a66bff,#7b2ff0 55%,#ff3d71);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
+.gear{position:absolute;right:10px;bottom:7px;background:none;color:var(--mu);width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:12px}.gear.on{color:var(--brand);background:color-mix(in srgb,var(--brand) 13%,transparent)}
+
+/* ===== Edit sheet ===== */
+#dlg{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center;background:rgba(20,8,24,.45);padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px));animation:fade .18s}
+#dlg[hidden]{display:none}
+#dlg .card{width:100%;max-width:560px;animation:rise .28s var(--bounce)}
+@keyframes fade{from{opacity:0}}@keyframes rise{from{transform:translateY(40px);opacity:0}}
+.del{display:block;margin:6px auto 0}
+
+/* ===== Toast ===== */
+#toast{position:fixed;z-index:30;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:14px;max-width:calc(100vw - 32px);background:var(--tst);color:#fff;border-radius:18px;padding:10px 10px 10px 16px;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .18s}
+#toast.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}#toast span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#toast button{background:none;color:#ffb020;padding:6px 10px;font-weight:800}
+
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style></head>
+<body><header class="top"><span class="tt"><svg class="logo" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#7b2ff0"/><circle cx="16" cy="16" r="12.2" fill="#efe4ff"/><circle cx="16" cy="16" r="10.6" fill="#a66bff"/><path d="M16 6v20M6 16h20M8.6 8.6l14.8 14.8M23.4 8.6 8.6 23.4" stroke="#efe4ff" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="16" r="2.2" fill="#efe4ff"/></svg><span><span class="jz">Big Nudgy</span> Reminders</span></span><button id="gear" class="gear" aria-label="Settings" data-a="gear"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></header>
+<main id="app"></main><div id="toast" role="status" aria-live="polite"></div><div id="dlg" hidden></div>
+<script src="sync.js"></script>
+<script>
+// =====================================================================
+// 1. DATA
+// Everything lives in one object, saved to localStorage under LS.
+// S = {v, items:[{id, t, rep, due}], set:{theme, since, lastBk, bkSnooze}}
+//   t:   the reminder's title
+//   rep: '' (once), 'week' or 'month'
+//   due: for a recurring reminder that's been done, the date (YYYY-MM-DD) it comes back. Until then it is hidden,
+//        but it still holds one of the five slots.
+// =====================================================================
+const LS='nudgy-v1';                       // localStorage key (don't change: it holds your reminders)
+const MAX=5, DAY_MS=864e5;
+const REP=[['','Once'],['week','Weekly'],['month','Monthly']];
+const MIGRATIONS=[];                       // add a function here when the data shape changes; its index+1 is the version
+let S=null, VIEW='home', DRAFT='', NREP='', ED=null, UNDO=null, TT=0, SVFAIL=0, DAY='';
+
+const seed=()=>({v:MIGRATIONS.length,items:[],set:{theme:'system',since:Date.now()}});
+function migrate(){if(!S||typeof S!='object')S=seed();if(!Array.isArray(S.items))S.items=[];if(!S.set||typeof S.set!='object')S.set={};
+ if(!S.set.theme)S.set.theme='system';if(!S.set.since)S.set.since=Date.now();
+ for(let v=S.v||0;v<MIGRATIONS.length;v++)MIGRATIONS[v](S);S.v=MIGRATIONS.length}
+function load(){try{S=JSON.parse(localStorage.getItem(LS))}catch(e){}migrate()}
+function save(){try{const t=JSON.stringify(S);localStorage.setItem(LS,t);SVFAIL=0;window.CloudSync&&CloudSync.saved(t)}catch(e){if(!SVFAIL){SVFAIL=1;setTimeout(()=>toast('Couldn’t save on this device. Download a backup in Settings.'),0)}}}
+
+// =====================================================================
+// 2. HELPERS
+// =====================================================================
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+const num=x=>+x||0;
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const p2=x=>String(x).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+const tdy=()=>iso(new Date());
+const parse=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const addDays=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return iso(d)};
+// One month later, on the same day when it exists (Jan 31 becomes Feb 28 or 29)
+const addMonth=s=>{const d=parse(s),day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+1);d.setDate(Math.min(day,new Date(d.getFullYear(),d.getMonth()+1,0).getDate()));return iso(d)};
+const nextDue=r=>r.rep=='week'?addDays(tdy(),7):addMonth(tdy());
+const shown=r=>!r.due||r.due<=tdy();
+const repName=v=>(REP.find(x=>x[0]==v)||REP[0])[1];
+const full=()=>S.items.length>=MAX;
+
+function toast(msg,undo){const el=document.getElementById('toast');
+ el.innerHTML=`<span>${esc(msg)}</span>${undo?'<button data-a="undo">Undo</button>':''}`;UNDO=undo||null;el.classList.add('on');
+ clearTimeout(TT);TT=setTimeout(()=>{el.classList.remove('on');UNDO=null},5000)}
+
+// Backup reminder: once a week since the last backup (or "Later"), counting from first use
+const needBk=()=>S.items.length&&Date.now()-Math.max(num(S.set.lastBk),num(S.set.bkSnooze),num(S.set.since))>7*DAY_MS;
+const markBk=()=>{S.set.lastBk=Date.now();save();R()};
+
+// =====================================================================
+// 3. VIEWS
+// =====================================================================
+function vHome(){
+ const vis=S.items.filter(shown),wait=S.items.length-vis.length,used=S.items.length;
+ const pips=Array.from({length:MAX},(_,i)=>`<i class="${i<used?'on':''}"></i>`).join('');
+ const rows=vis.length?vis.map(r=>`<div class="rm" data-row="${esc(r.id)}"><input type="checkbox" data-c="done" data-id="${esc(r.id)}" aria-label="Mark ${esc(r.t)} done"><button class="rt" data-a="edit" data-id="${esc(r.id)}">${esc(r.t)}</button>${r.rep?`<span class="tag">${repName(r.rep)}</span>`:''}</div>`).join('')
+  :`<div class="empty"><b>${wait?'All caught up':'Nothing to remember'}</b><span class="mu">${wait?'Your recurring reminders will be back when they’re due.':'Add up to five things below.'}</span></div>`;
+ const add=full()?`<p class="mu" style="margin:0">All five slots are full. Finish or delete one to make room.</p>`
+  :`<form id="addf" autocomplete="off"><input type="text" id="addt" maxlength="80" placeholder="Something to remember" aria-label="New reminder" value="${esc(DRAFT)}" enterkeyhint="done">
+   <div class="seg">${REP.map(([v,l])=>`<button type="button" class="${NREP==v?'on':''}" data-a="nrep" data-v="${v}">${l}</button>`).join('')}</div>
+   <button type="submit" class="addb">Add reminder</button></form>`;
+ const nag=needBk()?`<div class="card warn"><h3>Back up your reminders?</h3><p class="mu" style="margin:0 0 12px">They’re only saved in this browser, and some browsers clear site data after a while.</p><div class="row"><button data-a="gear">Back up</button><button class="g bd" data-a="bkLater">Later</button></div></div>`:'';
+ return `<div class="card"><h2>Reminders</h2><div class="slots"><div class="pips" aria-hidden="true">${pips}</div><span class="mu">${used} of ${MAX} used${wait?` · ${wait} coming back later`:''}</span></div>${rows}</div>
+ <div class="card"><h3>Add</h3>${add}</div>${nag}`}
+
+function vMore(){
+ return `<div class="card"><h2>Settings</h2><div class="sec">Appearance</div><div class="seg">${[['system','Auto'],['light','Light'],['dark','Dark']].map(([v,l])=>`<button class="${S.set.theme==v?'on':''}" data-a="theme" data-v="${v}">${l}</button>`).join('')}</div></div>
+ ${window.CloudSync?CloudSync.view():''}
+ <div class="card"><h2>Backup & restore</h2><p class="mu">Everything is saved in this browser only. Download a backup now and then to keep it safe, or to move it to another device.</p>
+ <p class="mu" style="font-weight:700">${S.set.lastBk?'Last backup: '+new Date(S.set.lastBk).toLocaleDateString([],{month:'long',day:'numeric',year:'numeric'}):'No backup yet.'}</p>
+ <div class="row"><button data-a="share">Share backup</button><button data-a="export">Download backup</button></div>
+ <div class="row"><button data-a="pickFile">Import backup file</button><input type="file" id="bkf" accept=".json,application/json" style="display:none" data-c="importFile"></div>
+ <div class="row" style="justify-content:center;margin-top:8px"><button class="x" style="flex:none" data-a="reset">Erase all data</button></div></div>
+ <button class="g bd" data-a="gear">Back to reminders</button>`}
+
+function vEdit(){const r=S.items.find(x=>x.id==ED.id);if(!r){ED=null;return ''}
+ return `<div class="card" role="dialog" aria-modal="true" aria-label="Edit reminder"><h2>Edit reminder</h2>
+ <input type="text" id="edt" maxlength="80" value="${esc(ED.t)}" aria-label="Title" enterkeyhint="done">
+ <div class="seg">${REP.map(([v,l])=>`<button type="button" class="${ED.rep==v?'on':''}" data-a="erep" data-v="${v}">${l}</button>`).join('')}</div>
+ <div class="row"><button data-a="esave">Save</button><button class="g bd" data-a="eclose">Cancel</button></div>
+ <button class="x del" data-a="edel">Delete reminder</button></div>`}
+
+function R(){const de=document.documentElement,th=S.set.theme||'system';de.dataset.theme=th=='system'?(DARK.matches?'dark':'light'):th;
+ DAY=tdy();
+ document.getElementById('app').innerHTML=VIEW=='more'?vMore():vHome();
+ document.getElementById('gear').classList.toggle('on',VIEW=='more');
+ const d=document.getElementById('dlg');if(ED){d.innerHTML=vEdit();d.hidden=!ED}else{d.hidden=true;d.innerHTML=''}}
+const DARK=matchMedia('(prefers-color-scheme: dark)');DARK.addEventListener?.('change',()=>S.set.theme=='system'&&R());
+
+// =====================================================================
+// 4. ACTIONS
+// =====================================================================
+function addItem(){const el=document.getElementById('addt'),t=(el?el.value:DRAFT).trim();
+ if(!t){el&&el.focus();return}
+ if(full()){toast('All five slots are full');return}
+ S.items.push({id:uid(),t,rep:NREP,due:''});DRAFT='';NREP='';save();R();
+ const n=document.getElementById('addt');if(n)n.focus()}
+
+function done(id){const i=S.items.findIndex(x=>x.id==id);if(i<0)return;const r=S.items[i];
+ if(r.rep){const prev=r.due;r.due=nextDue(r);save();R();
+  toast(`Done. Back ${r.rep=='week'?'in a week':'in a month'}.`,()=>{r.due=prev;save();R()})}
+ else{S.items.splice(i,1);save();R();
+  toast('Done: '+r.t,()=>{S.items.splice(Math.min(i,S.items.length),0,r);save();R()})}}
+
+const A={
+ gear:()=>{VIEW=VIEW=='more'?'home':'more';ED=null;R();scrollTo(0,0)},
+ nrep:d=>{DRAFT=(document.getElementById('addt')||{}).value??DRAFT;NREP=d.v;R()},
+ edit:d=>{const r=S.items.find(x=>x.id==d.id);if(!r)return;ED={id:r.id,t:r.t,rep:r.rep||''};R();const e=document.getElementById('edt');if(e)e.focus()},
+ erep:d=>{ED.t=document.getElementById('edt').value;ED.rep=d.v;R()},
+ esave:()=>{const r=S.items.find(x=>x.id==ED.id),t=document.getElementById('edt').value.trim();
+  if(!t){document.getElementById('edt').focus();return}
+  if(r){r.t=t;if(r.rep!=ED.rep){r.rep=ED.rep;r.due=''}save()}ED=null;R()},
+ eclose:()=>{ED=null;R()},
+ edel:()=>{const i=S.items.findIndex(x=>x.id==ED.id);ED=null;if(i<0){R();return}const r=S.items.splice(i,1)[0];save();R();
+  toast('Deleted: '+r.t,()=>{S.items.splice(Math.min(i,S.items.length),0,r);save();R()})},
+ undo:()=>{const u=UNDO;UNDO=null;document.getElementById('toast').classList.remove('on');u&&u()},
+ theme:d=>{S.set.theme=d.v;save();R()},
+ bkLater:()=>{S.set.bkSnooze=Date.now();save();R()},
+ share:shareData, export:exportData, pickFile:()=>document.getElementById('bkf').click(),
+ reset:()=>{if(confirm('Erase everything on this device and start over? This can’t be undone.')){S=seed();save();VIEW='home';R();toast('All data erased')}}
+};
+
+function bkFile(){const n=new Date(),d=iso(n),t=p2(n.getHours())+'-'+p2(n.getMinutes());return new File([JSON.stringify({app:LS,exported:n.toISOString(),exportedLocal:d+' '+t.replace('-',':'),data:S},null,1)],'big-nudgy-reminders-backup-'+d+'_'+t+'.json',{type:'application/json'})}
+function exportData(){const f=bkFile(),u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);markBk()}
+async function shareData(){const f=bkFile();try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Big Nudgy Reminders Backup'});markBk()}else{exportData();alert('Sharing files is not supported here, so the backup was downloaded instead.')}}catch(e){if(e&&e.name!=='AbortError')exportData()}}
+function importFile(inp){const f=inp.files&&inp.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{let j=JSON.parse(r.result);if(j&&j.data&&j.app)j=j.data;if(!j||!Array.isArray(j.items))throw 0;
+  if(!confirm('Replace everything on this device with this backup? This can’t be undone.')){inp.value='';return}
+  S=j;migrate();save();R();toast('Backup restored')}catch(e){alert('That file is not valid backup data')}inp.value=''};
+ r.onerror=()=>alert('Couldn’t read that file');r.readAsText(f)}
+
+// =====================================================================
+// 5. EVENTS
+// =====================================================================
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const f=A[b.dataset.a];if(f){e.preventDefault();f(b.dataset,b)}});
+document.addEventListener('change',e=>{const el=e.target;
+ if(el.dataset.c=='done'&&el.checked){el.classList.add('pop');const row=el.closest('.rm');row&&row.classList.add('going');el.disabled=true;setTimeout(()=>done(el.dataset.id),420)}
+ if(el.dataset.c=='importFile')importFile(el)});
+document.addEventListener('input',e=>{if(e.target.id=='addt')DRAFT=e.target.value});
+document.addEventListener('submit',e=>{if(e.target.id=='addf'){e.preventDefault();addItem()}});
+document.addEventListener('keydown',e=>{if(!ED)return;if(e.key=='Escape')A.eclose();else if(e.key=='Enter'&&e.target.id=='edt'){e.preventDefault();A.esave()}});
+document.getElementById('dlg').addEventListener('click',e=>{if(e.target.id=='dlg')A.eclose()});   // tap outside the sheet to cancel
+
+// =====================================================================
+// 6. START
+// =====================================================================
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+load();R();
+// Recurring reminders come back at midnight, so redraw when the day changes or the app is reopened
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!ED&&DAY!=tdy())R()});
+setInterval(()=>{if(!ED&&DAY!=tdy()&&!document.activeElement?.matches('input'))R()},60000);
+// Sync across devices (sync.js)
+window.CloudSync&&CloudSync.init({app:'reminders',name:'Big Nudgy',key:LS,what:'your reminders',version:()=>MIGRATIONS.length,btn:'',btn2:'g bd',
+ card:b=>`<div class="card"><h2>Sync across devices</h2>${b}</div>`,
+ apply:obj=>{if(!obj||!Array.isArray(obj.items))throw 0;S=obj;migrate();save();ED=null;R()},render:()=>{if(VIEW=='more')R()}});
+</script></body></html>
