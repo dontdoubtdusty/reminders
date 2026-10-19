@@ -6,11 +6,11 @@ Five things to remember, and no more. It's part of the Big apps, alongside [Big 
 
 - Opens straight to a big, bold list of up to five things, with a big plus button to add another
 - Five slots. When they're all used, you finish or delete one before adding another. Empty slots show as dashed outlines.
-- Each reminder is just a title, listed in the order you added it.
-- Tick a one-off reminder and it's gone.
-- Recurring reminders repeat weekly or monthly. Tick one and it hides, then comes back 7 days or 1 month after the day you ticked it. While it's away it still holds its slot, and a line under the list says how many are coming back later.
+- Each reminder is just a title, listed in the order you added it. Every word is capitalized when you save it.
+- To mark one done, hold it down for a second. A bar fills the reminder while you hold (let go early and it drains back), then the phone buzzes and it pops. A one-off reminder is then gone.
+- Recurring reminders repeat weekly or monthly. Mark one done and it hides, then comes back 7 days or 1 month after the day you ticked it. While it's away it still holds its slot, and a line under the list says how many are coming back later.
 - Tap a reminder to rename it, change how it repeats (including turning a one-off into a recurring one), or delete it.
-- Undo for anything you tick off or delete, for a few seconds afterward
+- Undo for anything you mark done or delete, for a few seconds afterward
 - No notifications: you open the app to see your list
 - Light, dark and automatic themes, plus a Day/Night option that switches to dark at 6pm and back to light at 6am
 - Backups you can share, download and import, with a weekly reminder

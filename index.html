@@ -36,7 +36,7 @@ main>.card{background-image:linear-gradient(90deg,var(--pc),var(--pc2));backgrou
 
 /* ===== Home: the big list ===== */
 .list{display:grid;gap:12px;padding-top:6px}
-.it{--c1:#ff6a2b;--c2:#ff3d71;position:relative;display:flex;align-items:center;gap:14px;min-height:88px;padding:14px 16px 14px 18px;border-radius:26px;color:#fff;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 16px 28px -16px var(--c2);overflow:hidden;animation:in .45s var(--bounce) both;transition:transform .3s var(--bounce),opacity .3s}
+.it{--c1:#ff6a2b;--c2:#ff3d71;position:relative;isolation:isolate;display:flex;align-items:center;gap:14px;min-height:88px;padding:14px 16px 14px 18px;border-radius:26px;color:#fff;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 16px 28px -16px var(--c2);overflow:hidden;animation:in .45s var(--bounce) both;transition:transform .3s var(--bounce),opacity .3s;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .it:before,.it:after{content:"";position:absolute;border-radius:50%;background:#ffffff1f;pointer-events:none}.it:before{right:-34px;top:-46px;width:130px;height:130px}.it:after{right:56px;bottom:-60px;width:90px;height:90px;background:#ffffff14}
 .it>*{position:relative;z-index:1}
 .it.c1{--c1:#b07cff;--c2:#7b2ff0}.it.c2{--c1:#2fd36b;--c2:#0ea5a0}.it.c3{--c1:#ffc533;--c2:#ff8a1f}.it.c4{--c1:#4fc3ff;--c2:#3a64ff}
@@ -45,10 +45,19 @@ main>.card{background-image:linear-gradient(90deg,var(--pc),var(--pc2));backgrou
 .it .rt{flex:1;min-width:0;text-align:left;background:none;box-shadow:none;color:#fff;padding:6px 0;border-radius:0;font:700 24px/1.15 var(--fd);letter-spacing:-.3px;overflow-wrap:anywhere;text-shadow:0 1px 2px rgba(0,0,0,.12)}
 .it .rt:active{transform:none;filter:none;opacity:.75}
 .it .tag{color:#fff;background:#ffffff33}
-.it input[type=checkbox]{width:36px;height:36px;border-radius:50%;border:3px solid #fffd;background:#ffffff26}
-.it input[type=checkbox]::after{width:8px;height:15px;border-width:0 3px 3px 0;margin-top:-4px}
-.it input[type=checkbox]:checked{background:#fff;border-color:#fff}.it input[type=checkbox]:checked::after{border-color:var(--c2)}
-.it.going{transform:scale(.95);opacity:.55}.it.going .rt{text-decoration:line-through}
+/* Hold to mark done: the bar (.hb) fills the tile over one second while held, drains back if let go early,
+   then the tile pops away. */
+.it .ck{flex:none;width:36px;height:36px;padding:0;border-radius:50%;border:3px solid #fffd;background:#ffffff26;box-shadow:none;display:grid;place-content:center;transition:background .2s,border-color .2s}
+.it .ck::after{content:"";width:8px;height:15px;margin-top:-4px;border:solid var(--c2);border-width:0 3px 3px 0;transform:rotate(45deg) scale(0);transition:transform .25s var(--bounce)}
+.it .ck:active{transform:none;filter:none}
+.it>.hb{position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(90deg,#ffffff38,#ffffff80);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.it.holding{transform:scale(.97);transition:transform 1s ease-out}
+.it.holding .hb{transform:scaleX(1);transition:transform 1s linear}
+.it.holding .rt:active{opacity:1}
+.it.popped{animation:popout .42s cubic-bezier(.3,1.4,.6,1) forwards}
+.it.popped .hb{transform:scaleX(1);background:#ffffff66;transition:none}
+.it.popped .ck{background:#fff;border-color:#fff}.it.popped .ck::after{transform:rotate(45deg) scale(1)}
+@keyframes popout{0%{transform:scale(.97)}35%{transform:scale(1.06);filter:brightness(1.15)}100%{transform:scale(.6);opacity:0}}
 .slot{min-height:88px;width:100%;border-radius:26px;border:2.5px dashed color-mix(in srgb,var(--mu) 32%,transparent);background:none;box-shadow:none;color:var(--mu);font:600 17px var(--fd);animation:in .45s var(--bounce) both}
 .slot:active{transform:scale(.97)}
 .note{text-align:center;margin:2px 0 0}
@@ -90,7 +99,8 @@ button.bd{border:1px solid var(--bd);color:var(--tx)}
 #toast.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}#toast span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #toast button{background:none;color:#ffb020;padding:6px 10px;font-weight:800}
 
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}
+ .it>.hb{transition:transform .35s ease-out!important}.it.holding>.hb{transition:transform 1s linear!important}}
 </style></head>
 <body><header class="top"><span class="tt"><svg class="logo" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#7b2ff0"/><circle cx="16" cy="16" r="12.2" fill="#efe4ff"/><circle cx="16" cy="16" r="10.6" fill="#a66bff"/><path d="M16 6v20M6 16h20M8.6 8.6l14.8 14.8M23.4 8.6 8.6 23.4" stroke="#efe4ff" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="16" r="2.2" fill="#efe4ff"/></svg><span><span class="jz">Big Tidy</span> Reminders</span></span><button id="gear" class="gear" aria-label="Settings" data-a="gear"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></header>
 <main id="app"></main><button id="fab" class="fab" data-a="add" aria-label="Add a reminder"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><div id="toast" role="status" aria-live="polite"></div><div id="dlg" hidden></div>
@@ -136,6 +146,8 @@ const nextDue=r=>r.rep=='week'?addDays(tdy(),7):addMonth(tdy());
 const shown=r=>!r.due||r.due<=tdy();
 const repName=v=>(REP.find(x=>x[0]==v)||REP[0])[1];
 const full=()=>S.items.length>=MAX;
+// Capitalize the first letter of every word (the rest is left as typed), e.g. "call mom (re: taxes)" -> "Call Mom (Re: Taxes)"
+const caps=s=>s.replace(/(^|\s)([^\s\p{L}]*)(\p{L})/gu,(m,a,b,c)=>a+b+c.toUpperCase());
 
 function toast(msg,undo){const el=document.getElementById('toast');
  el.innerHTML=`<span>${esc(msg)}</span>${undo?'<button data-a="undo">Undo</button>':''}`;UNDO=undo||null;el.classList.add('on');
@@ -150,9 +162,10 @@ const markBk=()=>{S.set.lastBk=Date.now();save();R()};
 // =====================================================================
 function vHome(){
  const vis=S.items.filter(shown),wait=S.items.length-vis.length,open=MAX-S.items.length;
- const tiles=vis.map((r,i)=>`<div class="it c${i}" data-row="${esc(r.id)}"><input type="checkbox" data-c="done" data-id="${esc(r.id)}" aria-label="Mark ${esc(r.t)} done"><button class="rt" data-a="edit" data-id="${esc(r.id)}">${esc(r.t)}</button>${r.rep?`<span class="tag">${repName(r.rep)}</span>`:''}</div>`).join('');
+ const tiles=vis.map((r,i)=>`<div class="it c${i}" data-id="${esc(r.id)}"><span class="hb" aria-hidden="true"></span><button class="ck" aria-label="Hold to mark ${esc(r.t)} done"></button><button class="rt" data-a="edit" data-id="${esc(r.id)}">${esc(r.t)}</button>${r.rep?`<span class="tag">${repName(r.rep)}</span>`:''}</div>`).join('');
  const slots=Array.from({length:open},(_,i)=>`<button class="slot" data-a="add" aria-label="Add a reminder">${i==0&&!vis.length?'Tap + to add something':''}</button>`).join('');
- const note=wait?`<p class="mu note">${wait} recurring ${wait>1?'reminders are':'reminder is'} coming back later</p>`:open?'':`<p class="mu note">All five slots are full</p>`;
+ const hint=vis.length&&!S.set.held?`<p class="mu note">Hold a reminder for a second to mark it done</p>`:'';
+ const note=hint+(wait?`<p class="mu note">${wait} recurring ${wait>1?'reminders are':'reminder is'} coming back later</p>`:open?'':`<p class="mu note">All five slots are full</p>`);
  const nag=needBk()?`<div class="card warn"><h3>Back up your reminders?</h3><p class="mu" style="margin:0 0 12px">They’re only saved in this browser, and some browsers clear site data after a while.</p><div class="row"><button data-a="gear">Back up</button><button class="g bd" data-a="bkLater">Later</button></div></div>`:'';
  return `<div class="list">${tiles}${slots}</div>${note}${nag}`}
 
@@ -200,7 +213,7 @@ const A={
  add:()=>{if(full()){toast('All five slots are full. Finish one first.');return}ED={id:null,t:'',rep:''};R();document.getElementById('edt')?.focus()},
  edit:d=>{const r=S.items.find(x=>x.id==d.id);if(!r)return;ED={id:r.id,t:r.t,rep:r.rep||''};R();const e=document.getElementById('edt');if(e)e.focus()},
  erep:d=>{ED.t=document.getElementById('edt').value;ED.rep=d.v;R()},
- esave:()=>{const t=document.getElementById('edt').value.trim();
+ esave:()=>{const t=caps(document.getElementById('edt').value.trim());
   if(!t){document.getElementById('edt').focus();return}
   if(!ED.id){if(!full())S.items.push({id:uid(),t,rep:ED.rep,due:''});save()}
   else{const r=S.items.find(x=>x.id==ED.id);if(r){r.t=t;if(r.rep!=ED.rep){r.rep=ED.rep;r.due=''}save()}}
@@ -229,8 +242,35 @@ function importFile(inp){const f=inp.files&&inp.files[0];if(!f)return;const r=ne
 // =====================================================================
 document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const f=A[b.dataset.a];if(f){e.preventDefault();f(b.dataset,b)}});
 document.addEventListener('change',e=>{const el=e.target;
- if(el.dataset.c=='done'&&el.checked){el.classList.add('pop');const row=el.closest('.it');row&&row.classList.add('going');el.disabled=true;setTimeout(()=>done(el.dataset.id),420)}
  if(el.dataset.c=='importFile')importFile(el)});
+
+// Hold to mark done: press and hold a reminder for one second. A bar fills the tile while you hold;
+// let go early (or start scrolling) and it drains back. At one second the phone buzzes and the reminder pops.
+// A quick tap still opens the reminder for editing.
+const HOLD_MS=1000, MOVE_PX=10;
+let H=null, NOCLICK=0;
+function holdStart(tile,e){if(H||ED||tile.classList.contains('popped'))return;
+ H={tile,id:tile.dataset.id,pid:e.pointerId,x:e.clientX||0,y:e.clientY||0,t0:Date.now(),fired:false,tm:setTimeout(holdDone,HOLD_MS)};
+ tile.classList.add('holding')}
+function holdEnd(){if(!H)return;clearTimeout(H.tm);
+ if(!H.fired)H.tile.classList.remove('holding');
+ if(H.fired||Date.now()-H.t0>250)NOCLICK=Date.now();   // a long press shouldn't also count as a tap that opens the editor
+ H=null}
+function holdDone(){if(!H)return;const{tile,id}=H;H.fired=true;buzz();
+ tile.classList.remove('holding');tile.classList.add('popped');
+ S.set.held=1;   // hides the "hold to mark done" hint from now on (saved by done)
+ setTimeout(()=>done(id),420)}
+// Haptic tap: vibrate where supported (Android); otherwise toggle a hidden iOS switch, which makes recent iPhones tick
+function buzz(){try{if(navigator.vibrate&&navigator.vibrate(30))return}catch(e){}
+ try{const l=document.createElement('label'),i=document.createElement('input');i.type='checkbox';i.setAttribute('switch','');l.appendChild(i);l.style.display='none';document.body.appendChild(l);l.click();l.remove()}catch(e){}}
+document.addEventListener('pointerdown',e=>{const t=e.target.closest('.it');if(t&&e.button<=0)holdStart(t,e)});
+document.addEventListener('pointermove',e=>{if(H&&!H.fired&&e.pointerId==H.pid&&Math.hypot(e.clientX-H.x,e.clientY-H.y)>MOVE_PX)holdEnd()});
+document.addEventListener('pointerup',holdEnd);document.addEventListener('pointercancel',holdEnd);addEventListener('blur',holdEnd);
+document.addEventListener('click',e=>{if(Date.now()-NOCLICK<600&&e.target.closest('#app')){e.preventDefault();e.stopPropagation();NOCLICK=0}},true);
+document.addEventListener('contextmenu',e=>{if(e.target.closest('.it'))e.preventDefault()});   // no long-press menu on tiles
+// Keyboard: hold Space or Enter on the circle
+document.addEventListener('keydown',e=>{if((e.key==' '||e.key=='Enter')&&e.target.classList?.contains('ck')){e.preventDefault();if(!e.repeat)holdStart(e.target.closest('.it'),e)}});
+document.addEventListener('keyup',e=>{if(e.key==' '||e.key=='Enter')holdEnd()});
 document.addEventListener('keydown',e=>{if(!ED)return;if(e.key=='Escape')A.eclose();else if(e.key=='Enter'&&e.target.id=='edt'){e.preventDefault();A.esave()}});
 document.getElementById('dlg').addEventListener('click',e=>{if(e.target.id=='dlg')A.eclose()});   // tap outside the sheet to cancel
 
