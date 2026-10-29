@@ -1,5 +1,5 @@
 // Cloud sync: keeps this app's data the same on every device you sign in on.
-// The same file is used by Big Skinny (diet), Big Saucy (cooking) and the budget app. Edit it in one, copy it to the others.
+// The same file is used by every Big app: Big Minty (budget), Big Saucy (cooking), Big Skinny (diet), Big Tidy (reminders) and Big Shiny (cleaning). Edit it in one, copy it to all the others.
 //
 // How it works
 // - Each person signs in with their own email + password (Firebase Auth). Every account has its own, separate data.
@@ -81,6 +81,7 @@
   function onUser(u) {
     if (unsub) { unsub(); unsub = null }
     user = u; known = true; clearTimeout(timer);
+    try { o.onUser && o.onUser(!!u) } catch (e) {}
     if (!u) { ls.del(ON); status = ''; draw(); return }
     ls.set(ON, '1'); status = 'syncing'; draw();
     ref = F.doc(db, 'users', u.uid, 'apps', o.app);
@@ -205,7 +206,7 @@
   document.head.appendChild(style);
 
   window.CloudSync = {
-    // opts: {app, name, key, version(), apply(obj), render(), card(body), btn, btn2, what}
+    // opts: {app, name, key, version(), apply(obj), render(), card(body), btn, btn2, what, onUser(signedIn)}
     init(opts) {
       o = opts;
       try { M = JSON.parse(ls.get(metaKey())) || {} } catch (e) { M = {} }
@@ -213,6 +214,22 @@
       if (ls.get(ON)) start().catch(() => {}); else known = true;
       addEventListener('online', () => { if (user && (M.dirty || status == 'offline')) push() });
       document.addEventListener('visibilitychange', () => { if (document.hidden && user && M.dirty) push() });
+    },
+    // Whether someone is signed in, and whether Firebase is still finding out
+    signedIn() { return !!user },
+    pending() { return !known },
+    // Public copies that anyone with the link can read, at shared/{id}: {...data, uid, at}.
+    // Only the signed-in owner can write or delete them (see the Firestore rules in the README).
+    pub: {
+      async get(id) { await start(); const s = await F.getDoc(F.doc(db, 'shared', id)); return s.exists() ? s.data() : null },
+      async put(id, data) { if (!user) throw { code: 'signed-out' }; await F.setDoc(F.doc(db, 'shared', id), { ...data, uid: user.uid, at: Date.now() }) },
+      async del(id) { if (!user) throw { code: 'signed-out' }; await F.deleteDoc(F.doc(db, 'shared', id)) }
+    },
+    // Small documents of the signed-in person's own, at users/{uid}/{path} (for example 'photos/abc'): {d, at}
+    mine: {
+      async get(path) { if (!user) throw { code: 'signed-out' }; const s = await F.getDoc(F.doc(db, 'users', user.uid, ...path.split('/'))); return s.exists() ? s.data() : null },
+      async put(path, data) { if (!user) throw { code: 'signed-out' }; await F.setDoc(F.doc(db, 'users', user.uid, ...path.split('/')), { ...data, at: Date.now() }) },
+      async del(path) { if (!user) throw { code: 'signed-out' }; await F.deleteDoc(F.doc(db, 'users', user.uid, ...path.split('/'))) }
     },
     // Call after every successful write of the app's data to localStorage, with the text that was written
     saved(txt) {
