@@ -1,6 +1,6 @@
 # Big Tidy Reminders
 
-Five things to remember, and no more. It's part of the Big apps, alongside [Big Minty Finances](https://github.com/dontdoubtdusty/budget), [Big Saucy Recipes](https://github.com/dontdoubtdusty/cooking), [Big Skinny Health](https://github.com/dontdoubtdusty/diet) and [Big Shiny Rounds](https://github.com/dontdoubtdusty/cleaning). It's one file (`index.html`) with no build step and no server.
+Five things to remember, and no more. It's part of the Big apps, alongside [Big Minty Finances](https://github.com/dontdoubtdusty/budget), [Big Saucy Recipes](https://github.com/dontdoubtdusty/cooking), [Big Skinny Health](https://github.com/dontdoubtdusty/diet), [Big Shiny Rounds](https://github.com/dontdoubtdusty/cleaning) and [Big Healthy Habits](https://github.com/dontdoubtdusty/habits). It's one file (`index.html`) with no build step and no server.
 
 ## Features
 
