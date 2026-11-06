@@ -109,6 +109,7 @@ button.bd{border:1px solid var(--bd);color:var(--tx)}
 <main id="app"></main><button id="fab" class="fab" data-a="add" aria-label="Add a reminder"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><path d="M12 4.5v15M4.5 12h15"/></svg></button><div id="toast" role="status" aria-live="polite"></div><div id="dlg" hidden></div>
 <script src="feedback.js"></script>
 <script src="sync.js"></script>
+<script src="push.js"></script>
 <script>
 // =====================================================================
 // 1. DATA
@@ -131,7 +132,7 @@ function migrate(){if(!S||typeof S!='object')S=seed();if(!Array.isArray(S.items)
  if(!S.set.theme)S.set.theme='system';if(!S.set.since)S.set.since=Date.now();
  for(let v=S.v||0;v<MIGRATIONS.length;v++)MIGRATIONS[v](S);S.v=MIGRATIONS.length}
 function load(){try{S=JSON.parse(localStorage.getItem(LS)??localStorage.getItem(OLD_LS))}catch(e){}migrate()}
-function save(){try{const t=JSON.stringify(S);localStorage.setItem(LS,t);SVFAIL=0;window.CloudSync&&CloudSync.saved(t)}catch(e){if(!SVFAIL){SVFAIL=1;setTimeout(()=>toast('Couldn’t save on this device. Download a backup in Settings.'),0)}}}
+function save(){try{const t=JSON.stringify(S);localStorage.setItem(LS,t);SVFAIL=0;window.CloudSync&&CloudSync.saved(t);window.Push&&Push.publish()}catch(e){if(!SVFAIL){SVFAIL=1;setTimeout(()=>toast('Couldn’t save on this device. Download a backup in Settings.'),0)}}}
 
 // =====================================================================
 // 2. HELPERS
@@ -173,8 +174,17 @@ function vHome(){
  const nag=needBk()?`<div class="card warn"><h3>Back up your reminders?</h3><p class="mu" style="margin:0 0 12px">They’re only saved in this browser, and some browsers clear site data after a while.</p><div class="row"><button data-a="gear">Back up</button><button class="g bd" data-a="bkLater">Later</button></div></div>`:'';
  return `<div class="list">${tiles}${slots}</div>${note}${nag}`}
 
+// Notification settings (what Push sends; the choices live in S.set so they sync with the rest)
+const nset=()=>({mode:S.set.nm||'digest',at:S.set.nat||'09:00',from:S.set.nfrom||'09:00',to:S.set.nto||'20:00'});
+function pushExtra(){const n=nset(),T=(k,v)=>`<input type="time" value="${esc(v)}" data-ns="${k}" style="width:auto">`;
+ return `<div class="sec" style="margin-top:12px">What to send</div><div class="seg">${[['off','Off'],['digest','Daily digest'],['random','Random']].map(([v,l])=>`<button class="${n.mode==v?'on':''}" data-a="nMode" data-v="${v}">${l}</button>`).join('')}</div>`+
+  (n.mode=='digest'?`<div style="display:flex;gap:8px;align-items:center;margin-top:10px"><span class="mu">Every day at</span>${T('nat',n.at)}</div><p class="mu" style="margin:8px 0 0">One notification listing what’s on your list. Nothing is sent when the list is empty.</p>`
+  :n.mode=='random'?`<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px"><span class="mu">Sometime between</span>${T('nfrom',n.from)}<span class="mu">and</span>${T('nto',n.to)}</div><p class="mu" style="margin:8px 0 0">One notification a day at a surprise moment in that window, to keep your list fresh. Nothing is sent when the list is empty.</p>`
+  :`<p class="mu" style="margin:8px 0 0">No notifications will be sent.</p>`)}
+
 function vMore(){
  return `<div class="card"><h2>Settings</h2><div class="sec">Appearance</div><div class="seg">${[['system','Auto'],['daynight','Day/Night'],['light','Light'],['dark','Dark']].map(([v,l])=>`<button class="${S.set.theme==v?'on':''}" data-a="theme" data-v="${v}">${l}</button>`).join('')}</div>${window.Feedback?Feedback.view(''):''}</div>
+ ${window.Push?Push.view(pushExtra()):''}
  ${window.CloudSync?CloudSync.view():''}
  <div class="card"><h2>Backup & restore</h2><p class="mu">Everything is saved in this browser only. Download a backup now and then to keep it safe, or to move it to another device.</p>
  <p class="mu" style="font-weight:700">${S.set.lastBk?'Last backup: '+new Date(S.set.lastBk).toLocaleDateString([],{month:'long',day:'numeric',year:'numeric'}):'No backup yet.'}</p>
@@ -227,6 +237,7 @@ const A={
   toast('Deleted: '+r.t,()=>{S.items.splice(Math.min(i,S.items.length),0,r);save();R()})},
  undo:()=>{const u=UNDO;UNDO=null;document.getElementById('toast').classList.remove('on');u&&u()},
  theme:d=>{S.set.theme=d.v;save();R()},
+ nMode:d=>{S.set.nm=d.v;save();R()},
  bkLater:()=>{S.set.bkSnooze=Date.now();save();R()},
  share:shareData, export:exportData, pickFile:()=>document.getElementById('bkf').click(),
  reset:()=>{if(confirm('Erase everything on this device and start over? This can’t be undone.')){S=seed();save();VIEW='home';R();toast('All data erased')}}
@@ -246,6 +257,7 @@ function importFile(inp){const f=inp.files&&inp.files[0];if(!f)return;const r=ne
 // =====================================================================
 document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const f=A[b.dataset.a];if(f){e.preventDefault();f(b.dataset,b)}});
 document.addEventListener('change',e=>{const el=e.target;
+ if(el.dataset.ns&&/^n(at|from|to)$/.test(el.dataset.ns)&&el.value){S.set[el.dataset.ns]=el.value;save();R()}
  if(el.dataset.c=='importFile')importFile(el)});
 
 // Hold to mark done: press and hold a reminder for one second. A bar fills the tile while you hold;
@@ -287,4 +299,7 @@ setInterval(()=>{if(!ED&&DAY!=tdy()&&!document.activeElement?.matches('input'))R
 window.CloudSync&&CloudSync.init({app:'reminders',name:'Big Tidy',key:LS,what:'your reminders',version:()=>MIGRATIONS.length,btn:'',btn2:'g bd',
  card:b=>`<div class="card"><h2>Sync across devices</h2>${b}</div>`,
  apply:obj=>{if(!obj||!Array.isArray(obj.items))throw 0;S=obj;migrate();save();ED=null;R()},render:()=>{if(VIEW=='more')R()}});
+// Push notifications (push.js): tell the server what to send so it can notify you when the app is closed
+window.Push&&Push.init({app:'reminders',name:'Tidy',render:()=>{if(VIEW=='more')R()},
+ schedule:()=>({...nset(),items:S.items.map(r=>({t:r.t,due:r.due||''}))})});
 </script></body></html>

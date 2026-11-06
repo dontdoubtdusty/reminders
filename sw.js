@@ -9,3 +9,17 @@ self.addEventListener('fetch',e=>{
   e.respondWith(fetch(r).then(res=>{if(res.ok){const c=res.clone();caches.open(CACHE).then(k=>k.put(r,c))}return res})
     .catch(()=>caches.match(r).then(m=>m||(r.mode==='navigate'?caches.match('./'):undefined))));
 });
+
+// Push notifications (sent by the notify-functions Cloud Function through Firebase Cloud Messaging)
+self.addEventListener('push',e=>{
+  let p={};try{p=e.data?e.data.json():{}}catch(x){}
+  const d=p.data||p.notification||p;
+  e.waitUntil(self.registration.showNotification(d.title||'Big Tidy',{body:d.body||'',tag:d.tag||undefined,icon:'icon-192.png',badge:'icon-192.png',data:{url:'./'}}));
+});
+self.addEventListener('notificationclick',e=>{
+  e.notification.close();
+  e.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(l=>{
+    for(const c of l){if('focus' in c)return c.focus()}
+    return clients.openWindow('./');
+  }));
+});

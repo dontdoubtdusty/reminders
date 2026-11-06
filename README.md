@@ -11,7 +11,7 @@ Five things to remember, and no more. It's part of the Big apps, alongside [Big 
 - Recurring reminders repeat weekly or monthly. Mark one done and it hides, then comes back 7 days or 1 month after the day you ticked it. While it's away it still holds its slot, and a line under the list says how many are coming back later.
 - Tap a reminder to rename it, change how it repeats (including turning a one-off into a recurring one), or delete it.
 - Undo for anything you mark done or delete, for a few seconds afterward
-- No notifications: you open the app to see your list
+- Notifications, if you want them (**Settings > Notifications**): a **daily digest** at a time you choose, or a **random** nudge at a surprise moment inside a time window you choose, each listing what's on your list and skipped when it's empty. They work when the app is closed, need you to be signed in to sync, and on iPhone only work from the Home Screen app.
 - Light, dark and automatic themes, plus a Day/Night option that switches to dark at 6pm and back to light at 6am
 - Light haptic ticks when you save, delete, finish or toggle something, and buttons that visibly press in on every tap. Turn haptics off under **Settings > Haptics**.
 - Backups you can share, download and import, with a weekly reminder
@@ -35,6 +35,7 @@ Once it's installed, it opens full screen with its own icon and works without an
 | --- | --- |
 | `index.html` | The whole app |
 | `sync.js` | Optional sync across devices (shared by all the Big apps) |
+| `push.js` | Notifications when the app is closed (shared with Big Healthy). Needs the Cloud Function in `notify-functions`. |
 | `feedback.js` | Haptic ticks and button press feedback (shared by all the Big apps) |
 | `manifest.webmanifest` | The app's name, colors and icons, used when it's installed |
 | `sw.js` | Saves a copy of the app so it opens offline |
