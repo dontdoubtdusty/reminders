@@ -14,7 +14,7 @@ self.addEventListener('fetch',e=>{
 self.addEventListener('push',e=>{
   let p={};try{p=e.data?e.data.json():{}}catch(x){}
   const d=p.data||p.notification||p;
-  e.waitUntil(self.registration.showNotification(d.title||'Big Tidy',{body:d.body||'',tag:d.tag||undefined,icon:'icon-192.png',badge:'icon-192.png',data:{url:'./'}}));
+  e.waitUntil(self.registration.showNotification(d.title||'Big Tidy',{body:d.body||'',tag:d.tag||undefined,icon:'icon-192.png',badge:'badge.png',data:{url:'./'}}));
 });
 self.addEventListener('notificationclick',e=>{
   e.notification.close();
