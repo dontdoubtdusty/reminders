@@ -12,6 +12,10 @@
 (function () {
   const SDK = 'https://www.gstatic.com/firebasejs/12.19.0/';
   const VAPID = '';   // optional: a Web Push key from Firebase console → Project settings → Cloud Messaging. Empty uses Firebase's default key.
+  // Firebase web app ID used for push, per Big app. The Big apps share one site, and Firebase keeps one push address per
+  // app ID for the whole site; two apps on the same ID cancel each other's address every time one opens. So each app that
+  // sends push needs its own ID (Firebase console > Project settings > Your apps). Missing means the sync app's ID.
+  const PUSH_APP_ID = { reminders: '1:691629121069:web:5be9a9274bbc7b911022a4' };
   const ls = {
     get: k => { try { return localStorage.getItem(k) } catch (e) { return null } },
     set: (k, v) => { try { localStorage.setItem(k, v) } catch (e) {} },
@@ -38,13 +42,19 @@
   }
   const enabled = () => !!ls.get(onKey()) && Notification.permission == 'granted';
 
+  // The Firebase app this Big app gets its push address from: its own named copy when it has its own app ID
+  function pushApp(A) {
+    const id = PUSH_APP_ID[o.app], base = A.getApp();
+    if (!id) return base;
+    return A.getApps().find(x => x.name == 'push-' + o.app) || A.initializeApp({ ...base.options, appId: id }, 'push-' + o.app);
+  }
   async function token() {
     const [A, M] = await Promise.all([import(SDK + 'firebase-app.js'), import(SDK + 'firebase-messaging.js')]);
     if (!(await M.isSupported())) throw { code: 'unsupported' };
     const reg = await navigator.serviceWorker.ready;
     const opts = { serviceWorkerRegistration: reg };
     if (VAPID) opts.vapidKey = VAPID;
-    return M.getToken(M.getMessaging(A.getApp()), opts);
+    return M.getToken(M.getMessaging(pushApp(A)), opts);
   }
   async function saveDevice(t) {
     await CloudSync.mine.put('devices/' + devId(), { app: o.app, token: t, ua: navigator.userAgent.slice(0, 120) });
