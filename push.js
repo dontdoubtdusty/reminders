@@ -77,14 +77,27 @@
         if (b.dataset.push == 'on') API.enable(); else if (b.dataset.push == 'off') API.disable();
       });
       // Once signed in, keep this device's address fresh (browsers rotate them now and then) and the schedule current
-      let tries = 0;
+      // Runs on open and whenever the app comes back to the front (phones keep it in memory for days, so "open" alone
+      // can be rare). A failure is shown, because a silent one means notifications quietly stop.
+      let tries = 0, lastGo = 0;
+      const warn = t => { msg = t; draw(); if (typeof window.toast == 'function') try { window.toast(t) } catch (e) {} };
       const go = async () => {
         if (!enabled()) return;
-        if (!CloudSync.signedIn()) { if (++tries < 6) setTimeout(go, 4000); return }
-        try { await saveDevice(await token()) } catch (e) {}
+        lastGo = Date.now();
+        if (!CloudSync.signedIn()) {
+          if (++tries < 6) setTimeout(go, 4000);
+          else warn('Notifications are paused: you are signed out. Sign in under Sync across devices to get them again.');
+          return;
+        }
+        tries = 0;
+        try { await saveDevice(await token()) }
+        catch (e) { console.warn('push refresh failed', e); warn('Couldn’t refresh notifications for this device. Open Settings and turn them off and on again.') }
         publishNow();
       };
       setTimeout(go, 2500);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState == 'visible' && Date.now() - lastGo > 6 * 3600e3) setTimeout(go, 1500);
+      });
     },
     // Call after every save of the app's data
     publish() {
