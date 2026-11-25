@@ -81,9 +81,23 @@
       // can be rare). A failure is shown, because a silent one means notifications quietly stop.
       let tries = 0, lastGo = 0;
       const warn = t => { msg = t; draw(); if (typeof window.toast == 'function') try { window.toast(t) } catch (e) {} };
+      // Says so when notifications were on but have stopped reaching this person: the browser took the permission
+      // away, or the server found no device to send to (for example after the phone cleared this site's data)
+      const stopped = async () => {
+        const w = why();
+        if (w && w != 'blocked') return;
+        if (ls.get(onKey())) return warn('Notifications stopped: this browser turned them off for the app. Open Settings > Notifications to turn them back on.');
+        if (!window.CloudSync) return;
+        if (!CloudSync.signedIn()) { if (CloudSync.pending() && ++tries < 6) setTimeout(stopped, 4000); return }
+        tries = 0;
+        try {
+          const s = await CloudSync.mine.get('notify/' + o.app);
+          if (s && s.missed) warn('Notifications aren’t reaching you anymore. Open Settings > Notifications and turn them on for this device.');
+        } catch (e) {}
+      };
       const go = async () => {
-        if (!enabled()) return;
         lastGo = Date.now();
+        if (!enabled()) return stopped();
         if (!CloudSync.signedIn()) {
           if (++tries < 6) setTimeout(go, 4000);
           else warn('Notifications are paused: you are signed out. Sign in under Sync across devices to get them again.');
